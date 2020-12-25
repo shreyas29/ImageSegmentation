@@ -1,0 +1,50 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.agnext.imagesegmentation"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        def (major, minor, patch) = rootProject.ext.versionName.toLowerCase().tokenize('.')
+        (major, minor, patch) = [major, minor, patch].collect{it.toInteger()}
+        versionCode = (major * 10000) + (minor * 100) + patch
+
+        versionName rootProject.ext.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'arm64-v8a', "armeabi-v7a", "x86", "x86_64"
+            universalApk true
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "androidx.appcompat:appcompat:$appcompatVersion"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintlayoutVersion"
+    implementation "androidx.cardview:cardview:$cardViewVersion"
+    implementation "com.quickbirdstudios:opencv:$opencvVersion"
+    implementation "com.github.jrvansuita:PickImage:$pickImageVersion"
+    testImplementation "junit:junit:$junitVersion"
+}
